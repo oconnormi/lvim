@@ -1,0 +1,10 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+if [ ! -L ~/.config/lvim ]; then
+    echo "Creating symlink for lvim"
+    ln -s ${SCRIPT_DIR} ${HOME}/.config/lvim
+else 
+    echo "lvim symlink already exists"
+fi
