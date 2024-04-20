@@ -17,7 +17,51 @@ lvim.plugins = {
   'nvim-tree/nvim-web-devicons',
   {  "williamboman/mason.nvim"},
   "olexsmir/gopher.nvim",
-  "leoluz/nvim-dap-go",
+
+  -- dap plugins
+  {"mfussenegger/nvim-dap"},
+  {
+    "leoluz/nvim-dap-go",
+    name = "dap-go",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+    },
+    config = function()
+      require("dap-go").setup ({
+        delve = {
+          type = 'server',
+          port = '${port}',
+          executable = {
+            command = 'dlv',
+            args = {'dap', '-l', '127.0.0.1:${port}'}
+          },
+        },
+        dap_configurations = {
+          {
+            type = "delve",
+            name = "Debug",
+            request = "launch",
+            program = "${file}",
+          },
+          {
+            type = "delve",
+            name = "Debug test", -- configuration for debugging test files
+            request = "launch",
+            mode = "test",
+            program = "${file}"
+          },
+          -- works with go.mod packages and sub packages 
+          {
+            type = "delve",
+            name = "Debug test (go.mod)",
+            request = "launch",
+            mode = "test",
+            program = "./${relativeFileDirname}"
+          },
+        },
+      })
+    end,
+  },
   {
     "ggandor/leap.nvim",
     name = "leap",
@@ -47,8 +91,11 @@ lvim.plugins = {
   {
     "nvim-neotest/neotest",
     dependencies = {
+      "nvim-neotest/nvim-nio",
       "nvim-neotest/neotest-go",
-      -- Your other test adapters here
+      "nvim-lua/plenary.nvim",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-treesitter/nvim-treesitter"
     },
     config = function()
       -- get neotest namespace (api call creates or returns namespace)
